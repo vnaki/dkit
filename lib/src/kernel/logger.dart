@@ -37,9 +37,9 @@ class FileAdapter extends LoggerAdapter
 class StdAdapter extends LoggerAdapter
 {
     @override
-    void write(String content)
+    void write(String content) async
     {
-        stdout..write(content)..close();
+        stdout.writeln(content);
     }
 }
 
@@ -58,7 +58,7 @@ abstract class ILogger
 }
 
 ///日记默认等级
-const Set<String> DefaultLogLevels =
+const Set<String> defaultLogLevels =
 {
     Logger.INFO,
     Logger.DEBUG,
@@ -85,38 +85,44 @@ class Logger extends ILogger
     ///致命错误
     static const FATAL = 'FATAL';
 
+    ///日志记录器实例
+    static Logger logger;
+
     ///日志适配器
-    final LoggerAdapter _adapter;
+    LoggerAdapter _adapter = StdAdapter();
 
     ///日志等级
-    final Set<String> _levels;
+    Set<String> _levels = defaultLogLevels;
 
     ///初始化日志记录器
-    Logger({LoggerAdapter adapter, Set<String> levels}): _adapter = adapter ?? StdAdapter(), _levels = levels ?? DefaultLogLevels;
-
-    ///获取当前日期字符串
-    String _now()
+    Logger()
     {
-        var now = DateTime.now();
+        logger = this;
+    }
 
-        return now.year.toString() +
-            '-' +
-            now.month.toString().padLeft(2, '0') +
-            '-' +
-            now.day.toString().padLeft(2, '0') +
-            ' ' +
-            now.hour.toString().padLeft(2, '0') +
-            ':' +
-            now.minute.toString().padLeft(2, '0') +
-            ':' +
-            now.second.toString().padLeft(2, '0');
+    ///创建单例日志记录器
+    factory Logger.singleton()
+    {
+        return logger ??= Logger();
+    }
+
+    ///设置日志适配器
+    void setAdapter(LoggerAdapter adapter)
+    {
+        _adapter = adapter;
+    }
+
+    ///设置日志级别
+    void setLevel(Set<String> level)
+    {
+        _levels = level;
     }
 
     ///记录日志,可自定义日志等级[level]
     void log(String message, String level)
     {
         if (_levels.contains(level)) {
-            _adapter.write('$_now() $level ' + message);
+            _adapter.write('$level ' + message);
         }
     }
 

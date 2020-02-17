@@ -1,4 +1,3 @@
-
 import 'package:dkit/src/kernel/context.dart';
 import 'package:dkit/src/kernel/middleware.dart';
 
@@ -42,11 +41,26 @@ class Route
 ///路由收集器
 class Collector
 {
+    ///路由收集器实例
+    static Collector collector;
+
     ///已注册的路由
     final Map<Method, Route> _routes = {};
 
     ///全局路由参数匹配模式
     final Map<String, String> _patterns = {};
+
+    ///初始化路由收集器
+    Collector()
+    {
+        collector = this;
+    }
+
+    ///创建单例路由收集器
+    factory Collector.singleton()
+    {
+        return collector ??= Collector();
+    }
 
     ///注册[GET]方法路由
     Route get(String path, Action action) => route(Method.GET, path, action);
@@ -93,8 +107,12 @@ class Dispatcher
 
 
     ///路由调度
-    void dispatch()
+    void dispatch() async
     {
+        var resp = _context.request.response;
 
+        resp.writeln('Hello');
+        await resp.flush();
+        await resp.close();
     }
 }

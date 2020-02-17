@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dkit/src/kernel/context.dart';
 import 'package:dkit/src/kernel/container.dart';
+import 'package:dkit/src/kernel/logger.dart';
 import 'package:dkit/src/kernel/middleware.dart';
 import 'package:dkit/src/kernel/pipeline.dart';
 import 'package:dkit/src/kernel/router.dart';
@@ -48,10 +49,34 @@ class Kernel extends Container
         return app ??= Kernel();
     }
 
+    ///设置日志适配器
+    void setLoggerAdapter(LoggerAdapter adapter)
+    {
+        app.logger.setAdapter(adapter);
+    }
+
+    ///设置请求访问日志
+    void setAccessLog()
+    {
+
+    }
+
+    ///设置请求错误日志
+    void setErrorLog()
+    {
+
+    }
+
+    ///设置日志级别
+    void setLogLevel(Set<String> level)
+    {
+        app.logger.setLevel(level);
+    }
+
     ///启动服务监听
     void run() async
     {
-        server.listen(_handleRequest, middleware: serverMiddleware);
+        await server.listen(_handleRequest, middleware: serverMiddleware);
     }
 
     ///处理请求
