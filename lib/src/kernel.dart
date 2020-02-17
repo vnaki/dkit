@@ -1,7 +1,6 @@
 
 import 'package:dkit/src/container/provider.dart';
 import 'package:dkit/src/container/container.dart';
-import 'package:dkit/src/http/router.dart';
 
 abstract class Kernel extends Container {
   ///内核版本号
@@ -9,9 +8,6 @@ abstract class Kernel extends Container {
 
   ///服务提供者
   List<Provider> providers = [];
-
-  ///全局路由动作
-  List<Action> actions = [];
 
   void run() {
     providers.forEach((provider) => provider.handle(this));
