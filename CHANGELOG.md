@@ -4,3 +4,6 @@
 - 添加Http组件,包括路由(Router)、HTTP服务(Server)、HTTP上下文(Context)、控制器接口(Controller)
 - 添加日志组件(Logger)
 - 添加内核组件(Kernel)
+
+##### 0.0.1+1 - 2020-020-16
+- 移除全局路由动作

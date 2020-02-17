@@ -4,7 +4,7 @@ import 'package:dkit/src/container/container.dart';
 
 abstract class Kernel extends Container {
   ///内核版本号
-  String get version => '0.0.1';
+  String get version => '0.0.1+1';
 
   ///服务提供者
   List<Provider> providers = [];
