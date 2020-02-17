@@ -51,6 +51,8 @@ class Response {
     _resp.contentLength = content?.length;
 
     _resp.writeln(content ?? '');
+
+    _flush();
   }
 
   ///设置普通内容
@@ -72,7 +74,7 @@ class Response {
   }
 
   ///刷新缓冲并关闭连接
-  void flush() {
+  void _flush() {
     _resp
       ..flush()
       ..close();
