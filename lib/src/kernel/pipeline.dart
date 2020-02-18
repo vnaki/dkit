@@ -20,3 +20,9 @@ class Pipeline<T>
         destination(_thing);
     }
 }
+
+///函数管道
+void pipeline<T>(List<Middleware<T>> pipes, T thing)
+{
+    pipes?.forEach((pipe) => pipe(thing));
+}

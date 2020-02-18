@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:dkit/src/kernel/pipeline.dart';
+import 'package:dkit/src/kernel/error.dart';
 import 'package:dkit/src/kernel/middleware.dart';
+import 'package:dkit/src/kernel/pipeline.dart';
 
 ///请求处理类型
 typedef RequestHandler = void Function(HttpRequest request);
@@ -32,22 +33,30 @@ class Server
     ///请求完成处理
     RequestCompleteHandler completeHandler;
 
-    HttpServer _srv;
-
     ///HTTP服务对象
-    HttpServer get srv => _srv;
+    HttpServer srv;
 
     ///监听请求
     void listen(RequestHandler handler, {List<Middleware<HttpServer>> middleware}) async
     {
-        if(securityContext == null) {
-            _srv = await HttpServer.bind(address, port, backlog: backlog, shared: shared);
-        } else {
-            _srv = await HttpServer.bindSecure(address, port, securityContext, backlog: backlog, shared: shared);
+        if(handler == null) {
+            throw RequestHandlerError('Request handler is null');
         }
 
-        Pipeline<HttpServer>()..send(_srv)..pipes(middleware)..then((srv) {
-            srv.listen(handler, onError: errorHandler, onDone: completeHandler, cancelOnError: true);
-        });
+        if(securityContext == null) {
+            srv = await HttpServer.bind(address, port, backlog: backlog, shared: shared);
+        } else {
+            srv = await HttpServer.bindSecure(address, port, securityContext, backlog: backlog, shared: shared);
+        }
+
+        pipeline<HttpServer>(middleware, srv);
+
+        srv.listen(handler, onError: errorHandler, onDone: completeHandler, cancelOnError: true);
     }
+}
+
+///请求处理器错误
+class RequestHandlerError extends BaseError
+{
+    RequestHandlerError(String message): super(message);
 }

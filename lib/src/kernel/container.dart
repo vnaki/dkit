@@ -1,4 +1,6 @@
 
+import 'package:dkit/src/kernel/error.dart';
+
 ///控制反转容器接口
 abstract class IContainer
 {
@@ -27,7 +29,7 @@ class Container implements IContainer
     void set(Symbol name, Factory factory)
     {
         if (has(name)) {
-            throw RegisteredNameError("名称'$name'已被注册");
+            throw RegisteredNameError("Name '$name' is already registered");
         }
 
         _factories[name] = factory;
@@ -38,7 +40,7 @@ class Container implements IContainer
     dynamic get(Symbol name, {bool singleton = true})
     {
         if (!has(name)) {
-            throw UnregisteredNameError("名称'$name'未注册");
+            throw UnregisteredNameError("Name '$name' not registered");
         }
 
         if (!singleton || !hasCache(name)) {
@@ -72,23 +74,13 @@ class Container implements IContainer
 }
 
 ///注册名已存在
-class RegisteredNameError extends Error
+class RegisteredNameError extends BaseError
 {
-    final String _message;
-
-    RegisteredNameError(this._message);
-
-    @override
-    String toString() => '错误: $_message';
+    RegisteredNameError(String message): super(message);
 }
 
 ///注册名不存在
-class UnregisteredNameError extends Error
+class UnregisteredNameError extends BaseError
 {
-    final String _message;
-
-    UnregisteredNameError(this._message);
-
-    @override
-    String toString() => '错误: $_message';
+    UnregisteredNameError(String message): super(message);
 }
