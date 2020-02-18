@@ -57,7 +57,7 @@ class Context
     }
 
     ///获取指定[name]查询参数
-    String param(String name, {String defaultValue})
+    String query(String name, {String defaultValue})
     {
         return request.uri.queryParameters[name] ?? defaultValue;
     }
@@ -87,34 +87,33 @@ class Context
     }
 
     ///响应输出
-    void response(String content, {int statusCode = HttpStatus.ok, String contentType, String charset = 'utf-8'}) async
+    void response(String content, {int statusCode = HttpStatus.ok, ContentType contentType}) async
     {
-        setHeader('content-type', contentType + ';charset='+charset);
-
         request.response.statusCode    = statusCode;
-        request.response.contentLength = content.length;
+        request.response.contentLength = (content ??= '').length+1;
+        request.response.headers.contentType = contentType ?? ContentType.text;
 
-        request.response.write(content);
+        request.response.writeln(content);
 
         await request.response.flush();
         await request.response.close();
     }
 
     ///纯文本响应输出
-    void plain(String content, {int statusCode = HttpStatus.ok, String charset = 'utf-8'})
+    void text(String content, {int statusCode = HttpStatus.ok})
     {
-        response(content, statusCode: statusCode, contentType: 'text/plain', charset: charset);
+        response(content, statusCode: statusCode, contentType: ContentType.text);
     }
 
     ///HTML响应输出
-    void html(String content, {int statusCode = HttpStatus.ok, String charset = 'utf-8'})
+    void html(String content, {int statusCode = HttpStatus.ok})
     {
-        response(content, statusCode: statusCode, contentType: 'text/html', charset: charset);
+        response(content, statusCode: statusCode, contentType: ContentType.html);
     }
 
     ///JSON响应输出
-    void json(Object object, {int statusCode = HttpStatus.ok, String charset = 'utf-8'})
+    void json(Object object, {int statusCode = HttpStatus.ok})
     {
-        response(jsonEncode(object), statusCode: statusCode, contentType: 'application/json', charset: charset);
+        response(jsonEncode(object), statusCode: statusCode, contentType: ContentType.json);
     }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:dkit/dkit.dart';
 
@@ -27,8 +28,16 @@ void main(List<String> arguments)
         context.html(size);
     });
 
-    app.router.get('/content', (Context c) {
+    app.router.get('/content', (Context context) async {
 
+
+        var  client = HttpClient();
+
+        await client.get('https://www.luogel.com', 443, '/').then((HttpClientRequest req) {
+
+        }).then((HttpClientResponse resp) {
+
+        });
     });
 
     app.run();

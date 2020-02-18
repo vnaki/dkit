@@ -5,7 +5,23 @@ import 'package:dkit/src/kernel/logger.dart';
 ///跨站请求伪造攻击中间件
 Context accessLog(Context context)
 {
-    var message = 'method: ' + context.request.method + ', path: ' + context.request.uri.path + ', time: ' + DateTime.now().format();
+    var message = 'method: '
+        +
+        context.request.method
+        +
+        ', ip:'
+        +
+        context.request.connectionInfo.remoteAddress.address
+        +
+        ', path: '
+        +
+        context.request.uri.path
+        +
+        ', time: '
+        +
+        DateTime.now().format();
+
     Logger.logger.info(message);
+
     return context;
 }

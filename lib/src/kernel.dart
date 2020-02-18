@@ -2,15 +2,16 @@ import 'dart:io';
 
 import 'package:dkit/src/kernel/context.dart';
 import 'package:dkit/src/kernel/container.dart';
-import 'package:dkit/src/kernel/dispatcher.dart';
 import 'package:dkit/src/kernel/logger.dart';
 import 'package:dkit/src/kernel/middleware.dart';
 import 'package:dkit/src/kernel/pipeline.dart';
+import 'package:dkit/src/kernel/router.dart';
 import 'package:dkit/src/kernel/server.dart';
 import 'package:dkit/src/middleware/req/body_limit.dart';
 import 'package:dkit/src/middleware/req/cors.dart';
 import 'package:dkit/src/middleware/req/csrf.dart';
 import 'package:dkit/src/middleware/req/rate_limit.dart';
+import 'package:dkit/src/middleware/srv/server_header.dart';
 import 'package:dkit/src/provider/logger.dart';
 import 'package:dkit/src/provider/router.dart';
 import 'package:dkit/src/middleware/req/access_log.dart';
@@ -32,10 +33,10 @@ class Kernel extends Container
     List<Provider> providers = [loggerProvider, routerProvider];
 
     ///服务中间件
-    List<Middleware<HttpServer>> serverMiddleware = [];
+    List<Middleware<HttpServer>> serverMiddleware = [serverHeader];
 
     ///请求中间件
-    List<Middleware<Context>> requestMiddleware   = [accessLog, bodyLimit, cors, csrf, rateLimit, timeout];
+    List<Middleware<Context>> requestMiddleware   = [accessLog, rateLimit, timeout, bodyLimit, cors, csrf];
 
     ///HTTP服务对象
     final Server server = Server();
