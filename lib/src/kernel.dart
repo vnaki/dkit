@@ -26,7 +26,7 @@ class Kernel extends Container
     static dynamic app;
 
     ///内核版本号
-    String get version => '0.0.2';
+    String get version => '0.0.3';
 
     ///服务提供者
     List<Provider> providers = [loggerProvider, routerProvider];
